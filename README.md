@@ -1,1 +1,3 @@
-# nornir_routeros
+# nornir-routeros
+
+RouterOS connection plugin and tasks for nornir.

@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "nornir_routeros"
+version = "0.0.1"
+description = "RouterOS API plugins for nornir"
+authors = ["Devon Mar <devonm@mdmm.ca>"]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+RouterOS-api = "^0.17.0"
+Jinja2 = "^2.11.2"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "^1.5.4"
+pycodestyle = "^2.6.0"
+Sphinx = "^3.4.1"
+sphinx-rtd-theme = "^0.5.0"
+sphinx-autodoc-typehints = "^1.11.1"
+nornir = "^3.0.0"
+
+[tool.poetry.plugins."nornir.plugins.inventory"]
+"routerosapi" = "nornir_routeros.plugins.connections:RouterOsApi"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
