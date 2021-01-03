@@ -9,7 +9,7 @@ Welcome to nornir_routeros's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
+   self
    tasks
    connections
 

@@ -1,5 +1,5 @@
 Connections
 ===========
 
-.. automodule:: nornir_routeros.connections
+.. automodule:: nornir_routeros.plugins.connections
    :members:

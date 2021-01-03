@@ -1,7 +1,7 @@
 Tasks
 ======
 
-.. automodule:: nornir_routeros.tasks
+.. automodule:: nornir_routeros.plugins.tasks
    :imported-members:
    :members:
    :undoc-members:
