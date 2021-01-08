@@ -84,7 +84,9 @@ def routeros_config_item(
         # Check the properties of the current item
         current_props = get_results[0]
         for k, v in desired_props.items():
-            current_val = current_props[k]
+            # Allow properties such as comments that
+            # don't show if not set to be set.
+            current_val = current_props.get(k, "")
             if current_val != desired_props[k]:
                 changed = True
                 set_params = {k: v}
@@ -92,7 +94,7 @@ def routeros_config_item(
                 if "id" in current_props:
                     set_params["id"] = current_props["id"]
 
-                diff += f"-{k}={current_props[k]}\n+{k}={v}\n"
+                diff += f"-{k}={current_props.get(k, '')}\n+{k}={v}\n"
 
                 if not dry_run:
                     resource.set(**set_params)
