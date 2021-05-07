@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, Optional
 from nornir.core.task import Task, Result
 from nornir_routeros.plugins.connections import CONNECTION_NAME
 from jinja2 import Template
@@ -8,7 +8,7 @@ def routeros_config_item(
     task: Task,
     path: str,
     where: Dict[str, str],
-    properties: Dict[str, str],
+    properties: Optional[Dict[str, str]],
     add_if_missing=False
 ) -> Result:
     """
@@ -18,7 +18,7 @@ def routeros_config_item(
     Args:
         path: The path to where the item should be. Example: /ip/firewall/filter to configure firewall filters.
         where: Dictionary of properties and values to find the item.
-        properties: Desired properties of the item.
+        properties: Desired properties of the item. If ``None``, then any items matching ``where`` will be **removed**.
         add_if_missing: If an item matching the criteria in ``where`` doesn't exist then one will be created.
 
     Returns:
@@ -50,9 +50,29 @@ def routeros_config_item(
                     }
                 )
     """
+
     api = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
+
+    resource = api.get_resource(path)
+    get_results = resource.get(**where)
+    dry_run = task.is_dry_run()
+
     changed = False
     diff = ""
+
+    if properties is None:
+        if len(get_results) > 0:
+            changed = True
+            for i in get_results:
+                resource.remove(id=i["id"])
+                diff += f"-{i}"
+
+        return Result(
+            host=task.host,
+            changed=changed,
+            diff=diff,
+            result=get_results
+        )
 
     # Holds the properties of the item
     desired_props = {}
@@ -69,12 +89,11 @@ def routeros_config_item(
         else:
             raise ValueError(f"Jinja2 rendered a empty value for property {k}")
 
-    resource = api.get_resource(path)
-    get_results = resource.get(**where)
-    dry_run = task.is_dry_run()
-
     if len(get_results) == 0 and add_if_missing:
-        result = resource.add(**desired_props)
+        if dry_run:
+            result = None
+        else:
+            result = resource.add(**desired_props)
         return Result(
             host=task.host,
             changed=True,
