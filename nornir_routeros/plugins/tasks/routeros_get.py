@@ -40,7 +40,7 @@ def routeros_get(
         filters["name"] = filters.pop("name_")
 
     api = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
-    result = api.get_resource(path).get()
+    result = api.get_resource(path).get(**filters)
 
     return Result(
         host=task.host,
