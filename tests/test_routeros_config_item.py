@@ -102,7 +102,7 @@ def test_address_list(nr):
         task=routeros_config_item,
         path="/ip/firewall/address-list",
         where={
-            "address": "10.0.0.0/8",
+            "address": "10.0.0.0/16",
             "list": "RFC1918"
         }
     )
@@ -111,6 +111,8 @@ def test_address_list(nr):
     assert delete_result.failed is False, str(delete_result.result)
     assert delete_result.changed is True
 
+
+def test_add_if_missing_false_failure(nr):
     no_add_failure = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
