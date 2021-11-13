@@ -21,6 +21,22 @@ def nr():
 
 
 @pytest.fixture(scope="session")
+def nr_dry_run():
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    nornir = InitNornir(
+        dry_run=True,
+        inventory={
+            "plugin": "SimpleInventory",
+            "options": {
+                "host_file": f"{current_dir}/inventory/hosts.yml"
+            }
+        }
+    )
+    yield nornir
+    nornir.close_connections()
+
+
+@pytest.fixture(scope="session")
 def nr_no_ssl():
     current_dir = os.path.dirname(os.path.realpath(__file__))
     nornir = InitNornir(

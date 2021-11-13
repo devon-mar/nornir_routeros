@@ -1,4 +1,4 @@
-from nornir_routeros.plugins.tasks import routeros_config_item
+from nornir_routeros.plugins.tasks import routeros_config_item, routeros_get
 
 
 def test_change_identity(nr):
@@ -119,3 +119,31 @@ def test_empty_jinja2_template_value_error(nr):
     device_result = result["router1"][0]
     assert device_result.failed is True
     assert "ValueError: " in device_result.result
+
+
+def test_dry_run(nr_dry_run):
+    result = nr_dry_run.run(
+        task=routeros_config_item,
+        path="/ip/firewall/address-list",
+        where={
+            "address": "192.168.0.0/16",
+            "list": "dry-run-test"
+        },
+        properties={
+            "address": "192.168.0.0/16",
+            "list": "dry-run-test"
+        },
+        add_if_missing=True
+    )
+    assert len(result["router1"]) == 1
+    device_result = result["router1"][0]
+    assert device_result.failed is False, device_result.result
+    assert device_result.changed is True
+
+    get = nr_dry_run.run(
+        task=routeros_get,
+        path="/ip/firewall/address-list",
+        address="192.168.0.0/16"
+    )
+    assert len(get["router1"]) == 1
+    assert len(get["router1"].result) == 0
