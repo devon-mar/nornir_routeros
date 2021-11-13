@@ -21,4 +21,4 @@ Connections
      connection_options:
        routerosapi:
          extras:
-         use_ssl: False
+           use_ssl: False
