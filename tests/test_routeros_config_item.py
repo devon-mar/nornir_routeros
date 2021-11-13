@@ -2,6 +2,9 @@ from nornir_routeros.plugins.tasks import routeros_config_item, routeros_get
 
 
 def test_change_identity(nr):
+    """
+    A test where the item has no ID.
+    """
     result = nr.run(
         task=routeros_config_item,
         path="/system/identity",
@@ -68,6 +71,32 @@ def test_address_list(nr):
     idemp_result = idemp["router1"][0]
     assert idemp_result.failed is False, str(idemp_result.result)
     assert idemp_result.changed is False
+
+    update = nr.run(
+        task=routeros_config_item,
+        path="/ip/firewall/address-list",
+        where={
+            "address": "10.0.0.0/8",
+            "list": "RFC1918"
+        },
+        properties={
+            "address": "10.0.0.0/16",
+            "list": "RFC1918"
+        },
+        add_if_missing=False
+    )
+    assert len(update["router1"]) == 1
+    update_result = update["router1"][0]
+    assert update_result.failed is False, str(update_result.result)
+    assert update_result.changed is True
+
+    verify = nr.run(
+        task=routeros_get,
+        path="/ip/firewall/address-list",
+        address="10.0.0.0/16",
+        list="RFC1918"
+    )
+    assert len(verify["router1"].result) == 1
 
     delete = nr.run(
         task=routeros_config_item,
