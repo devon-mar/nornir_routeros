@@ -7,8 +7,8 @@ def routeros_command(
     task: Task,
     path: str,
     command: str,
-    command_args: Dict[str, str] = {},
     changed: bool = False,
+    **kwargs
 ) -> Result:
     """
     Runs a RouterOS command such as ping or fetch.
@@ -19,20 +19,20 @@ def routeros_command(
         kwargs: Args for the command.
 
     Examples:
-        Ping 192.0.2.1 4 times::
+        Ping 127.0.0.1 5 times::
 
             nr.run(
                 task=routeros_command,
                 path="/",
                 command="ping",
-                address="192.0.2.1",
-                count="4"
+                address="127.0.0.1",
+                count=5
             )
     """
 
     api = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
     # See https://github.com/socialwifi/RouterOS-api/issues/39
-    call_args: Dict[str, bytes] = {str(k): v.encode() for k, v in command_args.items()}
+    call_args: Dict[str, bytes] = {str(k): str(v).encode() for k, v in kwargs.items()}
     result = api.get_binary_resource(path).call(command, call_args)
 
     return Result(

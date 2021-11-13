@@ -11,12 +11,12 @@ RouterOS-api = "^0.17.0"
 Jinja2 = "^2.11.2"
 
 [tool.poetry.dev-dependencies]
-autopep8 = "^1.5.4"
-pycodestyle = "^2.6.0"
 Sphinx = "^3.4.1"
 sphinx-rtd-theme = "^0.5.0"
 sphinx-autodoc-typehints = "^1.11.1"
 nornir = "^3.0.0"
+pytest = "^6.2.5"
+flake8 = "^4.0.1"
 
 [tool.poetry.plugins."nornir.plugins.connections"]
 "routerosapi" = "nornir_routeros.plugins.connections:RouterOsApi"

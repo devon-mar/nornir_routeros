@@ -9,6 +9,7 @@ def routeros_get(
 ) -> Result:
     """
     Returns a RouterOS resource.
+    For kwargs such as ``name`` that conflict with Nornir's, append an underscore.
 
     Args:
         path: Path to the resource. Example: /ip/firewall/filter for firewall filters.
@@ -34,8 +35,12 @@ def routeros_get(
             )
     """
 
+    filters = kwargs
+    if "name_" in filters:
+        filters["name"] = filters.pop("name_")
+
     api = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
-    result = api.get_resource(path).get(**kwargs)
+    result = api.get_resource(path).get()
 
     return Result(
         host=task.host,

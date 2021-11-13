@@ -8,7 +8,7 @@ def routeros_config_item(
     task: Task,
     path: str,
     where: Dict[str, str],
-    properties: Optional[Dict[str, str]],
+    properties: Optional[Dict[str, str]] = None,
     add_if_missing=False
 ) -> Result:
     """
