@@ -16,7 +16,8 @@ def nr():
             }
         }
     )
-    return nornir
+    yield nornir
+    nornir.close_connections()
 
 
 @pytest.fixture(scope="session")
@@ -30,7 +31,8 @@ def nr_no_ssl():
             }
         }
     )
-    return nornir
+    yield nornir
+    nornir.close_connections()
 
 
 @pytest.fixture(scope="function", autouse=True)
