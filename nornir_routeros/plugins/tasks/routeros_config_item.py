@@ -77,10 +77,6 @@ def routeros_config_item(
     # Holds the properties of the item
     desired_props = {}
     for k, v in properties.items():
-        # Don't want any properties that start with a '_'
-        if k[:1] == '_':
-            continue
-
         # Render the value using jinja2
         template = Template(str(v))
         rendered_val = template.render(host=task.host.dict())
