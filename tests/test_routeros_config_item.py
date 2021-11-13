@@ -119,8 +119,8 @@ def test_address_list(nr):
             "list": "RFC1918"
         }
     )
-    assert delete["router1"].failed is False
-    assert delete["router1"].changed is False
+    assert delete_idemp["router1"].failed is False
+    assert delete_idemp["router1"].changed is False
 
 
 def test_add_if_missing_false_failure(nr):
@@ -163,7 +163,7 @@ def test_empty_jinja2_template_value_error(nr):
     assert "ValueError: " in device_result.result
 
 
-def test_dry_run(nr_dry_run):
+def test_add_dry_run(nr_dry_run):
     result = nr_dry_run.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
@@ -189,3 +189,42 @@ def test_dry_run(nr_dry_run):
     )
     assert len(get["router1"]) == 1
     assert len(get["router1"].result) == 0
+
+
+def test_delete_dry_run(nr, nr_dry_run):
+    add = nr.run(
+        task=routeros_config_item,
+        path="/ip/firewall/address-list",
+        where={
+            "address": "192.0.2.0/24",
+            "list": "delete-dry"
+        },
+        properties={
+            "address": "192.0.2.0/24",
+            "list": "delete-dry"
+        },
+        add_if_missing=True
+    )
+    assert add["router1"].failed is False, add["router1"].result
+    assert add["router1"].changed is True
+
+    delete = nr_dry_run.run(
+        task=routeros_config_item,
+        path="/ip/firewall/address-list",
+        where={
+            "address": "192.0.2.0/24",
+            "list": "delete-dry"
+        }
+    )
+    assert len(delete["router1"]) == 1
+    delete_result = delete["router1"][0]
+    assert delete_result.failed is False, delete_result.result
+    assert delete_result.changed is True
+
+    verify = nr.run(
+        task=routeros_get,
+        path="/ip/firewall/address-list",
+        address="192.0.2.0/24",
+        list="delete-dry"
+    )
+    assert len(verify["router1"].result) == 1
