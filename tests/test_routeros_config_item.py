@@ -99,3 +99,23 @@ def test_address_list(nr):
     no_add_result = no_add_failure["router1"][0]
     assert no_add_result.failed is True, str(no_add_result.result)
     assert no_add_result.changed is False
+
+
+def test_empty_jinja2_template_value_error(nr):
+    result = nr.run(
+        task=routeros_config_item,
+        path="/ip/firewall/address-list",
+        where={
+            "address": "172.16.0.0/12",
+            "list": "RFC1918"
+        },
+        properties={
+            "address": "{{ '' }}",
+            "list": "RFC1918"
+        },
+        add_if_missing=True
+    )
+    assert len(result["router1"]) == 1
+    device_result = result["router1"][0]
+    assert device_result.failed is True
+    assert "ValueError: " in device_result.result
