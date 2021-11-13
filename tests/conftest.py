@@ -35,6 +35,21 @@ def nr_no_ssl():
     nornir.close_connections()
 
 
+@pytest.fixture(scope="session")
+def nr_ssl_failure():
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    nornir = InitNornir(
+        inventory={
+            "plugin": "SimpleInventory",
+            "options": {
+                "host_file": f"{current_dir}/inventory/hosts_ssl_failure.yml"
+            }
+        }
+    )
+    yield nornir
+    nornir.close_connections()
+
+
 @pytest.fixture(scope="function", autouse=True)
 def reset_hosts(nr):
     nr.data.reset_failed_hosts()
