@@ -228,3 +228,54 @@ def test_delete_dry_run(nr, nr_dry_run):
         list="delete-dry"
     )
     assert len(verify["router1"].result) == 1
+
+
+def test_update_dry_run(nr, nr_dry_run):
+    add = nr.run(
+        task=routeros_config_item,
+        path="/ip/firewall/address-list",
+        where={
+            "address": "192.0.2.0/24",
+            "list": "update-dry"
+        },
+        properties={
+            "address": "192.0.2.0/24",
+            "list": "update-dry"
+        },
+        add_if_missing=True
+    )
+    assert add["router1"].failed is False, add["router1"].result
+    assert add["router1"].changed is True
+
+    update = nr_dry_run.run(
+        task=routeros_config_item,
+        path="/ip/firewall/address-list",
+        where={
+            "address": "192.0.2.0/24",
+            "list": "update-dry"
+        },
+        properties={
+            "address": "192.0.2.0/25",
+            "list": "update-dry"
+        },
+        add_if_missing=False
+    )
+    assert update["router1"].failed is False, update["router1"].result
+    assert update["router1"].changed is True
+
+    verify = nr.run(
+        task=routeros_get,
+        path="/ip/firewall/address-list",
+        address="192.0.2.0/25",
+        list="update-dry"
+    )
+    assert len(verify["router1"].result) == 0
+
+    # Verify that the original is still there
+    verify2 = nr.run(
+        task=routeros_get,
+        path="/ip/firewall/address-list",
+        address="192.0.2.0/24",
+        list="update-dry"
+    )
+    assert len(verify2["router1"].result) == 1
