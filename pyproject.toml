@@ -9,6 +9,7 @@ license = "Apache-2.0"
 python = "^3.6"
 RouterOS-api = "^0.17.0"
 Jinja2 = "^2.11.2"
+pytest-cov = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
 Sphinx = "^3.4.1"
