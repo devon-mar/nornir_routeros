@@ -64,7 +64,8 @@ def routeros_config_item(
         if len(get_results) > 0:
             changed = True
             for i in get_results:
-                resource.remove(id=i["id"])
+                if not dry_run:
+                    resource.remove(id=i["id"])
                 diff += f"-{i}"
 
         return Result(
