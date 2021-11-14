@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nornir_routeros"
-version = "0.2.0"
+version = "0.3.0"
 description = "RouterOS API plugins for nornir"
 authors = ["Devon Mar <devonm@mdmm.ca>"]
 license = "Apache-2.0"
