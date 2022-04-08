@@ -40,7 +40,7 @@ class RouterOsApi:
         if extras is not None and extras.get("use_ssl", False):
             ssl_ctx = ssl.create_default_context()
 
-            ssl_ctx.check_hostname = extras['ssl_verify_hostname']
+            ssl_ctx.check_hostname = extras['ssl_verify_hostname'] if extras.get('ssl_verify_hostname') else False
             ssl_ctx.verify_mode = ssl.CERT_REQUIRED if extras['ssl_verify'] else ssl.CERT_NONE
 
 
