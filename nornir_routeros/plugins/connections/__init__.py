@@ -37,16 +37,19 @@ class RouterOsApi:
             "use_ssl": True
         }
 
-        if extras is not None and extras.get("use_ssl", True):
+        if extras is not None and extras.get("use_ssl", False):
             ssl_ctx = ssl.create_default_context()
-            ssl_ctx.verify_mode = ssl.CERT_REQUIRED if extras.get("ssl_verify", True) else ssl.CERT_NONE
-            ssl_ctx.check_hostname = extras.get("ssl_verify_hostname", False)
+
+            ssl_ctx.check_hostname = extras['ssl_verify_hostname']
+            ssl_ctx.verify_mode = ssl.CERT_REQUIRED if extras['ssl_verify'] else ssl.CERT_NONE
+
+
             if "ssl_ca_file" in extras:
                 ssl_ctx.load_verify_locations(extras.pop("ssl_ca_file"))
             params["ssl_context"] = ssl_ctx
 
-        extras = extras or {}
-        params.update(extras)
+        # extras = extras or {}
+        # params.update(extras)
         self._pool = RouterOsApiPool(**params)
         self.connection = self._pool.get_api()
 
