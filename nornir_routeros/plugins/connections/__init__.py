@@ -47,7 +47,7 @@ class RouterOsApi:
             # Disabling ssl_verify implicitly disables ssl_verify_hostname.
             # ValueError: Cannot set verify_mode to CERT_NONE when check_hostname is enabled.
             ssl_ctx.check_hostname = False if ssl_verify is False else extras.get("ssl_verify_hostname", True)
-            ssl_ctx.verify_mode = ssl.CERT_REQUIRED if extras.get("ssl_verify", True) else ssl.CERT_NONE
+            ssl_ctx.verify_mode = ssl.CERT_REQUIRED if ssl_verify else ssl.CERT_NONE
             if "ssl_ca_file" in extras:
                 ssl_ctx.load_verify_locations(extras.pop("ssl_ca_file"))
             params["ssl_context"] = ssl_ctx
