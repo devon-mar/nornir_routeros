@@ -6,16 +6,14 @@ Connections
 
 .. topic:: Usage
 
-   If you need to disable SSL (e.g. during initial provisioning) you need to
-   specify the routerosapi driver under connection options, an example on a
-   host follows this can just as easily be assigned to a group to use across
-   multiple devices:
+   If you need to disable SSL (e.g. during initial provisioning), you can use
+   set ``use_ssl`` to ``False`` in your inventory's connection options:
 
 .. code-block:: yaml
    :linenos:
 
    labMT:
-     hostname: 172.16.1.1
+     hostname: 192.0.2.1
      platform: routeros
      port: 8728
      connection_options:
