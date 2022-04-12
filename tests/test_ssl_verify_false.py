@@ -8,5 +8,5 @@ def test_no_ssl(nr_ssl_verify_false):
     )
     assert len(result["router1"]) == 1
     device_result = result["router1"][0]
-    assert device_result.failed is False
+    assert device_result.failed is False, str(device_result.result)
     assert device_result.changed is False
