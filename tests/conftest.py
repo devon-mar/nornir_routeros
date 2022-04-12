@@ -9,6 +9,7 @@ from nornir import InitNornir
 def nr():
     current_dir = os.path.dirname(os.path.realpath(__file__))
     nornir = InitNornir(
+        logging={"enabled": False},
         inventory={
             "plugin": "SimpleInventory",
             "options": {
@@ -25,6 +26,7 @@ def nr_dry_run():
     current_dir = os.path.dirname(os.path.realpath(__file__))
     nornir = InitNornir(
         dry_run=True,
+        logging={"enabled": False},
         inventory={
             "plugin": "SimpleInventory",
             "options": {
@@ -40,6 +42,7 @@ def nr_dry_run():
 def nr_no_ssl():
     current_dir = os.path.dirname(os.path.realpath(__file__))
     nornir = InitNornir(
+        logging={"enabled": False},
         inventory={
             "plugin": "SimpleInventory",
             "options": {
@@ -55,6 +58,7 @@ def nr_no_ssl():
 def nr_ssl_failure():
     current_dir = os.path.dirname(os.path.realpath(__file__))
     nornir = InitNornir(
+        logging={"enabled": False},
         inventory={
             "plugin": "SimpleInventory",
             "options": {
@@ -68,6 +72,7 @@ def nr_ssl_failure():
 def nr_ssl_verify_false():
     current_dir = os.path.dirname(os.path.realpath(__file__))
     nornir = InitNornir(
+        logging={"enabled": False},
         inventory={
             "plugin": "SimpleInventory",
             "options": {
