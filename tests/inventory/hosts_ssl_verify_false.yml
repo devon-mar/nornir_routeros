@@ -1,0 +1,9 @@
+---
+router1:
+  hostname: 127.0.0.1
+  username: vagrant
+  password: vagrant
+  connection_options:
+    routerosapi:
+      extras:
+        ssl_verify: False

@@ -64,6 +64,19 @@ def nr_ssl_failure():
     )
     yield nornir
     nornir.close_connections()
+@pytest.fixture(scope="session")
+def nr_ssl_verify_false():
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    nornir = InitNornir(
+        inventory={
+            "plugin": "SimpleInventory",
+            "options": {
+                "host_file": f"{current_dir}/inventory/hosts_ssl_verify_false.yml"
+            }
+        }
+    )
+    yield nornir
+    nornir.close_connections()
 
 
 @pytest.fixture(scope="function", autouse=True)
