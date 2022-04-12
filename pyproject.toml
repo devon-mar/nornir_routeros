@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nornir_routeros"
-version = "0.3.1"
+version = "0.4.0"
 description = "RouterOS API plugins for nornir"
 authors = ["Devon Mar <devonm@mdmm.ca>"]
 license = "Apache-2.0"
@@ -12,7 +12,7 @@ Jinja2 = "^2.11.2|^3.0"
 pytest-cov = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
-Sphinx = "^3.4.1"
+Sphinx = "^4.2"
 sphinx-rtd-theme = "^0.5.0"
 sphinx-autodoc-typehints = "^1.11.1"
 nornir = "^3.0.0"
