@@ -72,11 +72,17 @@ jobs:
         working-directory: ./docs
         run: poetry run make html SPHINXOPTS="-n"
 
-  tests:
+  test:
+    strategy:
+      matrix:
+        ros_version:
+          - 7.3.1
+          # Long-term
+          - 6.48.6
     runs-on: ubuntu-latest
     services:
       routeros:
-        image: ghcr.io/devon-mar/docker-routeros:7.3.1
+        image: ghcr.io/devon-mar/docker-routeros:${{ matrix.ros_version }}
         ports:
           - 2222:22
           - 8728:8728
