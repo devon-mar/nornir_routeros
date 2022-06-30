@@ -1,8 +1,8 @@
 ---
 router1:
   hostname: 127.0.0.1
-  username: vagrant
-  password: vagrant
+  username: admin
+  password: ""
   connection_options:
     routerosapi:
       port: 8728
