@@ -7,16 +7,19 @@ name: CI
       - devel
   pull_request:
 
+env:
+  PYTHON_VERSION: "3.10"
+
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup Python 3.8
+      - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -49,7 +52,7 @@ jobs:
       - name: Setup Python 3.8
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -72,15 +75,32 @@ jobs:
         working-directory: ./docs
         run: poetry run make html SPHINXOPTS="-n"
 
-  tests:
-    runs-on: macos-10.15
+  test:
+    strategy:
+      matrix:
+        ros_version:
+          - 7.3.1
+          # Long-term
+          - 6.48.6
+    runs-on: ubuntu-latest
+    services:
+      routeros:
+        image: ghcr.io/devon-mar/docker-routeros:${{ matrix.ros_version }}
+        ports:
+          - 2222:22
+          - 8728:8728
+          - 8729:8729
+        volumes:
+          - /dev/net/tun:/dev/net/tun
+        options: >-
+          --cap-add=NET_ADMIN
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup Python 3.8
+      - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -100,16 +120,9 @@ jobs:
         run: poetry install
         if: steps.cache-poetry-dependencies.outputs.cache-hit != 'true'
 
-      - name: Restore Vagrant boxes from cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.vagrant.d/boxes
-          key: ${{ runner.os }}-vagrant-${{ hashFiles('**/Vagrantfile') }}
-
-      - name: Vagrant up
-        working-directory: ./tests
-        run: |
-          vagrant up
+      - name: Setup the router
+        run:
+          tests/ros_setup.sh
 
       - name: Run pytest
         run: |
