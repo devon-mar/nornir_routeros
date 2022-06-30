@@ -29,7 +29,7 @@ jobs:
 
       - name: Load cached venv
         id: cache-poetry-dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .venv
           key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
@@ -62,7 +62,7 @@ jobs:
 
       - name: Load cached venv
         id: cache-poetry-dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .venv
           key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
@@ -111,7 +111,7 @@ jobs:
       # https://stackoverflow.com/questions/62977821/how-to-cache-poetry-install-for-github-actions
       - name: Load cached venv
         id: cache-poetry-dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .venv
           key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
