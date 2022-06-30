@@ -1,5 +1,6 @@
 import ssl
 from typing import Any, Dict, Optional
+
 from nornir.core.configuration import Config
 from routeros_api import RouterOsApiPool
 

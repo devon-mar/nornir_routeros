@@ -1,7 +1,9 @@
 from typing import Dict, Optional
-from nornir.core.task import Task, Result
-from nornir_routeros.plugins.connections import CONNECTION_NAME
+
 from jinja2 import Template
+from nornir.core.task import Result, Task
+
+from nornir_routeros.plugins.connections import CONNECTION_NAME
 
 
 def routeros_config_item(

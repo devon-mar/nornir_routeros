@@ -1,7 +1,6 @@
-import pytest
-
 import os
 
+import pytest
 from nornir import InitNornir
 
 

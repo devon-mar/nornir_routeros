@@ -1,4 +1,5 @@
 from nornir.core.task import Result, Task
+
 from nornir_routeros.plugins.connections import CONNECTION_NAME
 
 

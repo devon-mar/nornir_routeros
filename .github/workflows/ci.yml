@@ -35,6 +35,8 @@ jobs:
         run: poetry install
         if: steps.cache-poetry-dependencies.outputs.cache-hit != 'true'
 
+      - uses: psf/black@stable
+
       - name: Lint with flake8
         run: |
           poetry run flake8 nornir_routeros --count --max-line-length=120 --show-source --statistics
