@@ -9,9 +9,7 @@ def test_change_identity(nr):
         task=routeros_config_item,
         path="/system/identity",
         where={},
-        properties={
-            "name": "{{ host.name }}"
-        }
+        properties={"name": "{{ host.name }}"},
     )
     assert len(result["router1"]) == 1
     device_result = result["router1"][0]
@@ -24,9 +22,7 @@ def test_change_identity(nr):
         task=routeros_config_item,
         path="/system/identity",
         where={},
-        properties={
-            "name": "{{ host.name }}"
-        }
+        properties={"name": "{{ host.name }}"},
     )
     assert len(result["router1"]) == 1
     idemp_result = idemp["router1"][0]
@@ -39,15 +35,9 @@ def test_address_list(nr):
     result = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
-        where={
-            "address": "10.0.0.0/8",
-            "list": "RFC1918"
-        },
-        properties={
-            "address": "10.0.0.0/8",
-            "list": "RFC1918"
-        },
-        add_if_missing=True
+        where={"address": "10.0.0.0/8", "list": "RFC1918"},
+        properties={"address": "10.0.0.0/8", "list": "RFC1918"},
+        add_if_missing=True,
     )
     assert len(result["router1"]) == 1
     device_result = result["router1"][0]
@@ -57,15 +47,9 @@ def test_address_list(nr):
     idemp = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
-        where={
-            "address": "10.0.0.0/8",
-            "list": "RFC1918"
-        },
-        properties={
-            "address": "10.0.0.0/8",
-            "list": "RFC1918"
-        },
-        add_if_missing=False
+        where={"address": "10.0.0.0/8", "list": "RFC1918"},
+        properties={"address": "10.0.0.0/8", "list": "RFC1918"},
+        add_if_missing=False,
     )
     assert len(idemp["router1"]) == 1
     idemp_result = idemp["router1"][0]
@@ -75,15 +59,9 @@ def test_address_list(nr):
     update = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
-        where={
-            "address": "10.0.0.0/8",
-            "list": "RFC1918"
-        },
-        properties={
-            "address": "10.0.0.0/16",
-            "list": "RFC1918"
-        },
-        add_if_missing=False
+        where={"address": "10.0.0.0/8", "list": "RFC1918"},
+        properties={"address": "10.0.0.0/16", "list": "RFC1918"},
+        add_if_missing=False,
     )
     assert len(update["router1"]) == 1
     update_result = update["router1"][0]
@@ -94,17 +72,14 @@ def test_address_list(nr):
         task=routeros_get,
         path="/ip/firewall/address-list",
         address="10.0.0.0/16",
-        list="RFC1918"
+        list="RFC1918",
     )
     assert len(verify["router1"].result) == 1
 
     delete = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
-        where={
-            "address": "10.0.0.0/16",
-            "list": "RFC1918"
-        }
+        where={"address": "10.0.0.0/16", "list": "RFC1918"},
     )
     assert len(delete["router1"]) == 1
     delete_result = delete["router1"][0]
@@ -114,10 +89,7 @@ def test_address_list(nr):
     delete_idemp = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
-        where={
-            "address": "10.0.0.0/16",
-            "list": "RFC1918"
-        }
+        where={"address": "10.0.0.0/16", "list": "RFC1918"},
     )
     assert delete_idemp["router1"].failed is False
     assert delete_idemp["router1"].changed is False
@@ -127,15 +99,9 @@ def test_add_if_missing_false_failure(nr):
     no_add_failure = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
-        where={
-            "address": "10.0.0.0/8",
-            "list": "RFC1918"
-        },
-        properties={
-            "address": "10.0.0.0/8",
-            "list": "RFC1918"
-        },
-        add_if_missing=False
+        where={"address": "10.0.0.0/8", "list": "RFC1918"},
+        properties={"address": "10.0.0.0/8", "list": "RFC1918"},
+        add_if_missing=False,
     )
     assert len(no_add_failure["router1"]) == 1
     no_add_result = no_add_failure["router1"][0]
@@ -147,15 +113,9 @@ def test_empty_jinja2_template_value_error(nr):
     result = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
-        where={
-            "address": "172.16.0.0/12",
-            "list": "RFC1918"
-        },
-        properties={
-            "address": "{{ '' }}",
-            "list": "RFC1918"
-        },
-        add_if_missing=True
+        where={"address": "172.16.0.0/12", "list": "RFC1918"},
+        properties={"address": "{{ '' }}", "list": "RFC1918"},
+        add_if_missing=True,
     )
     assert len(result["router1"]) == 1
     device_result = result["router1"][0]
@@ -167,15 +127,9 @@ def test_add_dry_run(nr_dry_run):
     result = nr_dry_run.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
-        where={
-            "address": "192.168.0.0/16",
-            "list": "dry-run-test"
-        },
-        properties={
-            "address": "192.168.0.0/16",
-            "list": "dry-run-test"
-        },
-        add_if_missing=True
+        where={"address": "192.168.0.0/16", "list": "dry-run-test"},
+        properties={"address": "192.168.0.0/16", "list": "dry-run-test"},
+        add_if_missing=True,
     )
     assert len(result["router1"]) == 1
     device_result = result["router1"][0]
@@ -183,9 +137,7 @@ def test_add_dry_run(nr_dry_run):
     assert device_result.changed is True
 
     get = nr_dry_run.run(
-        task=routeros_get,
-        path="/ip/firewall/address-list",
-        address="192.168.0.0/16"
+        task=routeros_get, path="/ip/firewall/address-list", address="192.168.0.0/16"
     )
     assert len(get["router1"]) == 1
     assert len(get["router1"].result) == 0
@@ -195,15 +147,9 @@ def test_delete_dry_run(nr, nr_dry_run):
     add = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
-        where={
-            "address": "192.0.2.0/24",
-            "list": "delete-dry"
-        },
-        properties={
-            "address": "192.0.2.0/24",
-            "list": "delete-dry"
-        },
-        add_if_missing=True
+        where={"address": "192.0.2.0/24", "list": "delete-dry"},
+        properties={"address": "192.0.2.0/24", "list": "delete-dry"},
+        add_if_missing=True,
     )
     assert add["router1"].failed is False, add["router1"].result
     assert add["router1"].changed is True
@@ -211,10 +157,7 @@ def test_delete_dry_run(nr, nr_dry_run):
     delete = nr_dry_run.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
-        where={
-            "address": "192.0.2.0/24",
-            "list": "delete-dry"
-        }
+        where={"address": "192.0.2.0/24", "list": "delete-dry"},
     )
     assert len(delete["router1"]) == 1
     delete_result = delete["router1"][0]
@@ -225,7 +168,7 @@ def test_delete_dry_run(nr, nr_dry_run):
         task=routeros_get,
         path="/ip/firewall/address-list",
         address="192.0.2.0/24",
-        list="delete-dry"
+        list="delete-dry",
     )
     assert len(verify["router1"].result) == 1
 
@@ -234,15 +177,9 @@ def test_update_dry_run(nr, nr_dry_run):
     add = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
-        where={
-            "address": "192.0.2.0/24",
-            "list": "update-dry"
-        },
-        properties={
-            "address": "192.0.2.0/24",
-            "list": "update-dry"
-        },
-        add_if_missing=True
+        where={"address": "192.0.2.0/24", "list": "update-dry"},
+        properties={"address": "192.0.2.0/24", "list": "update-dry"},
+        add_if_missing=True,
     )
     assert add["router1"].failed is False, add["router1"].result
     assert add["router1"].changed is True
@@ -250,15 +187,9 @@ def test_update_dry_run(nr, nr_dry_run):
     update = nr_dry_run.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
-        where={
-            "address": "192.0.2.0/24",
-            "list": "update-dry"
-        },
-        properties={
-            "address": "192.0.2.0/25",
-            "list": "update-dry"
-        },
-        add_if_missing=False
+        where={"address": "192.0.2.0/24", "list": "update-dry"},
+        properties={"address": "192.0.2.0/25", "list": "update-dry"},
+        add_if_missing=False,
     )
     assert update["router1"].failed is False, update["router1"].result
     assert update["router1"].changed is True
@@ -267,7 +198,7 @@ def test_update_dry_run(nr, nr_dry_run):
         task=routeros_get,
         path="/ip/firewall/address-list",
         address="192.0.2.0/25",
-        list="update-dry"
+        list="update-dry",
     )
     assert len(verify["router1"].result) == 0
 
@@ -276,6 +207,6 @@ def test_update_dry_run(nr, nr_dry_run):
         task=routeros_get,
         path="/ip/firewall/address-list",
         address="192.0.2.0/24",
-        list="update-dry"
+        list="update-dry",
     )
     assert len(verify2["router1"].result) == 1

@@ -18,6 +18,7 @@ sphinx-autodoc-typehints = "^1.11.1"
 nornir = "^3.0.0"
 pytest = "^6.2.5"
 flake8 = "^4.0.1"
+black = { version = "^22.6.0", python = "^3.7" }
 
 [tool.poetry.plugins."nornir.plugins.connections"]
 "routerosapi" = "nornir_routeros.plugins.connections:RouterOsApi"

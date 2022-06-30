@@ -9,7 +9,7 @@ def routeros_config_item(
     path: str,
     where: Dict[str, str],
     properties: Optional[Dict[str, str]] = None,
-    add_if_missing=False
+    add_if_missing=False,
 ) -> Result:
     """
     Configures an item.
@@ -68,12 +68,7 @@ def routeros_config_item(
                     resource.remove(id=i["id"])
                 diff += f"-{i}"
 
-        return Result(
-            host=task.host,
-            changed=changed,
-            diff=diff,
-            result=get_results
-        )
+        return Result(host=task.host, changed=changed, diff=diff, result=get_results)
 
     # Holds the properties of the item
     desired_props = {}
@@ -91,11 +86,7 @@ def routeros_config_item(
             result = None
         else:
             result = resource.add(**desired_props)
-        return Result(
-            host=task.host,
-            changed=True,
-            result=result
-        )
+        return Result(host=task.host, changed=True, result=result)
     elif len(get_results) == 1:
         # Check the properties of the current item
         current_props = get_results[0]
@@ -115,11 +106,10 @@ def routeros_config_item(
                 if not dry_run:
                     resource.set(**set_params)
     else:
-        raise ValueError(f"{len(get_results)}>1 items were found using {where}. Consider revising `where`.")
+        raise ValueError(
+            f"{len(get_results)}>1 items were found using {where}. Consider revising `where`."
+        )
 
     return Result(
-        host=task.host,
-        changed=changed,
-        diff=diff,
-        result=resource.get(**where)
+        host=task.host, changed=changed, diff=diff, result=resource.get(**where)
     )

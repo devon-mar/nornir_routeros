@@ -2,11 +2,7 @@ from nornir.core.task import Result, Task
 from nornir_routeros.plugins.connections import CONNECTION_NAME
 
 
-def routeros_get(
-    task: Task,
-    path: str,
-    **kwargs
-) -> Result:
+def routeros_get(task: Task, path: str, **kwargs) -> Result:
     """
     Returns a RouterOS resource.
     For kwargs such as ``name`` that conflict with Nornir's, append an underscore.
@@ -42,8 +38,4 @@ def routeros_get(
     api = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
     result = api.get_resource(path).get(**filters)
 
-    return Result(
-        host=task.host,
-        changed=False,
-        result=result
-    )
+    return Result(host=task.host, changed=False, result=result)

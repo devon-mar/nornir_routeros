@@ -12,10 +12,8 @@ def nr():
         logging={"enabled": False},
         inventory={
             "plugin": "SimpleInventory",
-            "options": {
-                "host_file": f"{current_dir}/inventory/hosts.yml"
-            }
-        }
+            "options": {"host_file": f"{current_dir}/inventory/hosts.yml"},
+        },
     )
     yield nornir
     nornir.close_connections()
@@ -29,10 +27,8 @@ def nr_dry_run():
         logging={"enabled": False},
         inventory={
             "plugin": "SimpleInventory",
-            "options": {
-                "host_file": f"{current_dir}/inventory/hosts.yml"
-            }
-        }
+            "options": {"host_file": f"{current_dir}/inventory/hosts.yml"},
+        },
     )
     yield nornir
     nornir.close_connections()
@@ -45,10 +41,8 @@ def nr_no_ssl():
         logging={"enabled": False},
         inventory={
             "plugin": "SimpleInventory",
-            "options": {
-                "host_file": f"{current_dir}/inventory/hosts_no_ssl.yml"
-            }
-        }
+            "options": {"host_file": f"{current_dir}/inventory/hosts_no_ssl.yml"},
+        },
     )
     yield nornir
     nornir.close_connections()
@@ -61,13 +55,13 @@ def nr_ssl_failure():
         logging={"enabled": False},
         inventory={
             "plugin": "SimpleInventory",
-            "options": {
-                "host_file": f"{current_dir}/inventory/hosts_ssl_failure.yml"
-            }
-        }
+            "options": {"host_file": f"{current_dir}/inventory/hosts_ssl_failure.yml"},
+        },
     )
     yield nornir
     nornir.close_connections()
+
+
 @pytest.fixture(scope="session")
 def nr_ssl_verify_false():
     current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -77,8 +71,8 @@ def nr_ssl_verify_false():
             "plugin": "SimpleInventory",
             "options": {
                 "host_file": f"{current_dir}/inventory/hosts_ssl_verify_false.yml"
-            }
-        }
+            },
+        },
     )
     yield nornir
     nornir.close_connections()

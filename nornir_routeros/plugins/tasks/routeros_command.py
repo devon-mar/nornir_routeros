@@ -4,11 +4,7 @@ from nornir_routeros.plugins.connections import CONNECTION_NAME
 
 
 def routeros_command(
-    task: Task,
-    path: str,
-    command: str,
-    changed: bool = False,
-    **kwargs
+    task: Task, path: str, command: str, changed: bool = False, **kwargs
 ) -> Result:
     """
     Runs a RouterOS command such as ping or fetch.
@@ -35,8 +31,4 @@ def routeros_command(
     call_args: Dict[str, bytes] = {str(k): str(v).encode() for k, v in kwargs.items()}
     result = api.get_binary_resource(path).call(command, call_args)
 
-    return Result(
-        host=task.host,
-        changed=changed,
-        result=result
-    )
+    return Result(host=task.host, changed=changed, result=result)
