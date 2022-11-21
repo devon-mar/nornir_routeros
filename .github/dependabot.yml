@@ -5,8 +5,9 @@ updates:
     directory: /
     schedule:
       interval: daily
+    versioning-strategy: increase-if-necessary
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: daily
-
