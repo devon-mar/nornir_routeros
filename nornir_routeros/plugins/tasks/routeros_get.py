@@ -1,6 +1,7 @@
 from nornir.core.task import Result, Task
 
 from nornir_routeros.plugins.connections import CONNECTION_NAME
+from nornir_routeros.utils import clean_kwargs
 
 
 def routeros_get(task: Task, path: str, **kwargs) -> Result:
@@ -10,7 +11,8 @@ def routeros_get(task: Task, path: str, **kwargs) -> Result:
 
     Args:
         path: Path to the resource. Example: /ip/firewall/filter for firewall filters.
-        kwargs: Filter results by the given args.
+        kwargs: Filter results by the given kwargs. A trailing '_' can be added to
+                kwargs that conflict with that of Nornir's.
 
     Returns:
         Result: A ``Result`` with result set to the item(s) under the given path.
@@ -32,11 +34,7 @@ def routeros_get(task: Task, path: str, **kwargs) -> Result:
             )
     """
 
-    filters = kwargs
-    if "name_" in filters:
-        filters["name"] = filters.pop("name_")
-
     api = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
-    result = api.get_resource(path).get(**filters)
+    result = api.get_resource(path).get(**clean_kwargs(kwargs))
 
     return Result(host=task.host, changed=False, result=result)

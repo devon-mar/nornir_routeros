@@ -9,18 +9,18 @@ license = "Apache-2.0"
 python = "^3.6"
 RouterOS-api = "^0.17.0"
 Jinja2 = "^2.11.2|^3.0"
-pytest-cov = ">=3,<5"
+pytest-cov = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
 Sphinx = "^4.2"
-sphinx-rtd-theme = "^1.0.0"
+sphinx-rtd-theme = "^0.5.0"
 sphinx-autodoc-typehints = "^1.11.1"
 nornir = "^3.0.0"
-pytest = "^7.0.1"
+pytest = "^6.2.5"
 flake8 = "^4.0.1"
-black = { version = "^22.10.0", python = "^3.7" }
+black = { version = "^22.6.0", python = "^3.7" }
 isort = { version = "^5.10.0", python = "^3.7" }
-flake8-isort = "^4.2.0"
+flake8-isort = "^4.1.1"
 
 [tool.poetry.plugins."nornir.plugins.connections"]
 "routerosapi" = "nornir_routeros.plugins.connections:RouterOsApi"
