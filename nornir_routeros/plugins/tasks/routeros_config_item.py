@@ -64,9 +64,9 @@ def routeros_config_item(
                     },
                     properties={
                         "name": "test"
-                        "source": ':log info "hello"\r\n:log info "world"\r\n'
+                        "source": ':log info "hello"\\r\\n:log info "world"\\r\\n'
                     },
-                    # To preserve \r\n line endings:
+                    # To preserve \\r\\n line endings:
                     template_property_values=False
                 )
 
