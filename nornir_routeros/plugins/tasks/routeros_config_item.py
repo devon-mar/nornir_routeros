@@ -23,7 +23,7 @@ def routeros_config_item(
         where: Dictionary of properties and values to find the item.
         properties: Desired properties of the item. If ``None``, then any items matching ``where`` will be **removed**.
         add_if_missing: If an item matching the criteria in ``where`` doesn't exist then one will be created.
-        template_property_values: Use jinja2 for property values.
+        template_property_values: Use Jinja2 for property values.
 
     Returns:
         Result: A ``Result`` with ``result`` set to the item after any changes.
@@ -53,6 +53,23 @@ def routeros_config_item(
                         "disabled": "true"
                     }
                 )
+
+            Ensure a script is configured::
+
+                nr.run(
+                    task=routeros_config_item,
+                    path="/system/script",
+                    where={
+                        "name": "test"
+                    },
+                    properties={
+                        "name": "test"
+                        "source": ':log info "hello"\r\n:log info "world"\r\n'
+                    },
+                    # To preserve \r\n line endings:
+                    template_property_values=False
+                )
+
     """
 
     api = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
