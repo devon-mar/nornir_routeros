@@ -123,6 +123,25 @@ def test_empty_jinja2_template_value_error(nr):
     assert "ValueError: " in device_result.result
 
 
+def test_no_template(nr):
+    result = nr.run(
+        task=routeros_config_item,
+        path="/ip/firewall/address-list",
+        where={"address": "192.0.2.0/24", "list": "no-template"},
+        properties={
+            "address": "192.0.2.0/24",
+            "list": "no-template",
+            # If jinja2 was enabled, we should get an error since this is falsey
+            "comment": "",
+        },
+        add_if_missing=True,
+        template_property_values=False,
+    )
+    assert len(result["router1"]) == 1
+    assert result["router1"].failed is False
+    assert result["router1"].changed is True
+
+
 def test_add_dry_run(nr_dry_run):
     result = nr_dry_run.run(
         task=routeros_config_item,
