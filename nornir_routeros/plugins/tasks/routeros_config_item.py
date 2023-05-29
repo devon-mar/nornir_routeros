@@ -11,7 +11,8 @@ def routeros_config_item(
     path: str,
     where: Dict[str, str],
     properties: Optional[Dict[str, str]] = None,
-    add_if_missing=False,
+    add_if_missing: bool = False,
+    template_property_values: bool = True,
 ) -> Result:
     """
     Configures an item.
@@ -22,6 +23,7 @@ def routeros_config_item(
         where: Dictionary of properties and values to find the item.
         properties: Desired properties of the item. If ``None``, then any items matching ``where`` will be **removed**.
         add_if_missing: If an item matching the criteria in ``where`` doesn't exist then one will be created.
+        template_property_values: Use jinja2 for property values.
 
     Returns:
         Result: A ``Result`` with ``result`` set to the item after any changes.
@@ -74,14 +76,17 @@ def routeros_config_item(
 
     # Holds the properties of the item
     desired_props = {}
-    for k, v in properties.items():
-        # Render the value using jinja2
-        template = Template(str(v))
-        rendered_val = template.render(host=task.host.dict())
-        if rendered_val:
-            desired_props[k] = rendered_val
-        else:
-            raise ValueError(f"Jinja2 rendered a empty value for property {k}")
+    if template_property_values:
+        for k, v in properties.items():
+            # Render the value using jinja2
+            template = Template(str(v))
+            rendered_val = template.render(host=task.host.dict())
+            if rendered_val:
+                desired_props[k] = rendered_val
+            else:
+                raise ValueError(f"Jinja2 rendered a empty value for property {k}")
+    else:
+        desired_props = properties
 
     if len(get_results) == 0 and add_if_missing:
         if dry_run:
