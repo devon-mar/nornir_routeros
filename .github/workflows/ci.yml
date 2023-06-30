@@ -79,7 +79,7 @@ jobs:
     strategy:
       matrix:
         ros_version:
-          - 7.5
+          - 7.10.1
           # Long-term
           - 6.48.6
     runs-on: ubuntu-latest
@@ -121,8 +121,7 @@ jobs:
         if: steps.cache-poetry-dependencies.outputs.cache-hit != 'true'
 
       - name: Setup the router
-        run:
-          tests/ros_setup.sh
+        run: tests/ros_setup.sh
 
       - name: Run pytest
         run: |
