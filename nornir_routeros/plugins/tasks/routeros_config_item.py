@@ -10,9 +10,9 @@ def routeros_config_item(
     task: Task,
     path: str,
     where: Dict[str, str],
-    properties: Optional[Dict[str, str]] = None,
+    properties: Optional[Dict[str, str]],
     add_if_missing: bool = False,
-    template_property_values: bool = True,
+    template_property_values: bool = False,
 ) -> Result:
     """
     Configures an item.
@@ -27,6 +27,7 @@ def routeros_config_item(
 
     Returns:
         Result: A ``Result`` with ``result`` set to the item after any changes.
+          If dry_run and add_if_missing is True or no item was removed, None will be returned.
 
     Examples:
 
@@ -66,10 +67,9 @@ def routeros_config_item(
                         "name": "test"
                         "source": ':log info "hello"\\r\\n:log info "world"\\r\\n'
                     },
-                    # To preserve \\r\\n line endings:
-                    template_property_values=False
+                    # To preserve \\r\\n line endings make sure templating is off:
+                    template_property_values=False,
                 )
-
     """
 
     api = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
@@ -78,18 +78,28 @@ def routeros_config_item(
     get_results = resource.get(**where)
     dry_run = task.is_dry_run()
 
-    changed = False
-    diff = ""
+    diff_lines = []
+
+    result = None
 
     if properties is None:
-        if len(get_results) > 0:
-            changed = True
-            for i in get_results:
-                if not dry_run:
-                    resource.remove(id=i["id"])
-                diff += f"-{i}"
+        if len(get_results) > 1:
+            raise ValueError(
+                f"Expected 1 item, received {len(get_results)}: {get_results}"
+            )
+        elif len(get_results) == 1:
+            item = get_results[0]
+            diff_lines.append(f"-{item}")
+            if dry_run is False:
+                resource.remove(id=item["id"])
+            result = item
 
-        return Result(host=task.host, changed=changed, diff=diff, result=get_results)
+        return Result(
+            host=task.host,
+            changed=len(diff_lines) > 0,
+            diff="\n".join(diff_lines),
+            result=result,
+        )
 
     # Holds the properties of the item
     desired_props = {}
@@ -105,35 +115,53 @@ def routeros_config_item(
     else:
         desired_props = properties
 
-    if len(get_results) == 0 and add_if_missing:
-        if dry_run:
+    if len(get_results) == 0 and add_if_missing is True:
+        if dry_run is True:
             result = None
         else:
-            result = resource.add(**desired_props)
+            resource.add(**desired_props)
+            item = resource.get(**where)
+            if len(item) != 1:
+                raise ValueError(f"Expected 1 item, received {len(item)}: {item}")
+            result = item[0]
+
         return Result(host=task.host, changed=True, result=result)
     elif len(get_results) == 1:
         # Check the properties of the current item
         current_props = get_results[0]
+
+        set_params = {}
+        # Some resources don't use ID
+        if "id" in current_props:
+            set_params["id"] = current_props["id"]
+        do_set = False
+
         for k, v in desired_props.items():
             # Allow properties such as comments that
             # don't show if not set to be set.
             current_val = current_props.get(k, "")
+
             if current_val != desired_props[k]:
-                changed = True
-                set_params = {k: v}
-                # Some resources don't use ID
-                if "id" in current_props:
-                    set_params["id"] = current_props["id"]
+                diff_lines.append(f"-{k}={current_props.get(k, '')}")
+                diff_lines.append(f"+{k}={v}")
 
-                diff += f"-{k}={current_props.get(k, '')}\n+{k}={v}\n"
+                set_params[k] = v
+                do_set = True
 
-                if not dry_run:
-                    resource.set(**set_params)
+        if do_set is True and dry_run is False:
+            resource.set(**set_params)
+            item = resource.get(**where)
+            if len(item) != 1:
+                raise ValueError(f"Expected 1 item, received {len(item)}: {item}")
+            result = item[0]
+        else:
+            result = get_results[0]
     else:
-        raise ValueError(
-            f"{len(get_results)}>1 items were found using {where}. Consider revising `where`."
-        )
+        raise ValueError(f"Expected 1 item, received {len(get_results)}: {get_results}")
 
     return Result(
-        host=task.host, changed=changed, diff=diff, result=resource.get(**where)
+        host=task.host,
+        changed=len(diff_lines) > 0,
+        diff="\n".join(diff_lines),
+        result=result,
     )

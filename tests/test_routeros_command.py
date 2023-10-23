@@ -19,3 +19,19 @@ def test_routeros_command_backup(nr):
     device_result = result["router1"][0]
     assert device_result.failed is False, str(device_result.result)
     assert device_result.changed is False
+
+
+def test_routeros_command_with_dashes(nr):
+    result = nr.run(
+        task=routeros_command,
+        path="/",
+        command="ping",
+        address="127.0.0.1",
+        count=5,
+        # Corresponds to do-not-fragment
+        do_not_fragment="true",
+    )
+    assert len(result["router1"]) == 1
+    device_result = result["router1"][0]
+    assert device_result.failed is False, str(device_result.result)
+    assert device_result.changed is False

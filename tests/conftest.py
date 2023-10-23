@@ -78,5 +78,6 @@ def nr_ssl_verify_false():
 
 
 @pytest.fixture(scope="function", autouse=True)
-def reset_hosts(nr):
+def reset_hosts(nr, nr_dry_run):
     nr.data.reset_failed_hosts()
+    nr_dry_run.data.reset_failed_hosts()
