@@ -478,6 +478,27 @@ def test_set_properties(nr: Nornir, nr_dry_run: Nornir) -> None:
     assert "next-pool" not in update["router1"].result
 
 
+def test_set_properties_add(nr: Nornir) -> None:
+    add = nr.run(
+        task=routeros_config_item,
+        path="/ip/firewall/address-list",
+        where={"list": "set-properties-add"},
+        properties={"address": "192.0.2.200", "list": "set-properties-add"},
+        set_properties={"address": "192.0.2.201"},
+        add_if_missing=True,
+    )
+    assert add["router1"].failed is False, repr(add["router1"].result)
+    assert add["router1"].changed is True
+
+    verify = nr.run(
+        task=routeros_get,
+        path="/ip/firewall/address-list",
+        address="192.0.2.201",
+        list="set-properties-add",
+    )
+    assert len(verify["router1"].result) == 1
+
+
 def test_set_properties_template(nr: Nornir) -> None:
     result = nr.run(
         task=routeros_config_item,
