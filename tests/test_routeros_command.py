@@ -1,7 +1,9 @@
+from nornir.core import Nornir
+
 from nornir_routeros.plugins.tasks import routeros_command
 
 
-def test_routeros_command_ping(nr):
+def test_routeros_command_ping(nr: Nornir) -> None:
     result = nr.run(
         task=routeros_command, path="/", command="ping", address="127.0.0.1", count=5
     )
@@ -11,7 +13,7 @@ def test_routeros_command_ping(nr):
     assert device_result.changed is False
 
 
-def test_routeros_command_backup(nr):
+def test_routeros_command_backup(nr: Nornir) -> None:
     result = nr.run(
         task=routeros_command, path="/system/backup", command="save", name="backup.rsc"
     )
@@ -21,7 +23,7 @@ def test_routeros_command_backup(nr):
     assert device_result.changed is False
 
 
-def test_routeros_command_with_dashes(nr):
+def test_routeros_command_with_dashes(nr: Nornir) -> None:
     result = nr.run(
         task=routeros_command,
         path="/",

@@ -1,7 +1,9 @@
+from nornir.core import Nornir
+
 from nornir_routeros.plugins.tasks import routeros_config_item, routeros_get
 
 
-def test_change_identity(nr):
+def test_change_identity(nr: Nornir) -> None:
     """
     A test where the item has no ID.
     """
@@ -34,7 +36,7 @@ def test_change_identity(nr):
     assert idemp_result.result["name"] == "router1"
 
 
-def test_address_list(nr):
+def test_address_list(nr: Nornir) -> None:
     result = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
@@ -109,7 +111,7 @@ def test_address_list(nr):
     assert delete_idemp["router1"].result is None
 
 
-def test_add_if_missing_false_failure(nr):
+def test_add_if_missing_false_failure(nr: Nornir) -> None:
     no_add_failure = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
@@ -123,7 +125,7 @@ def test_add_if_missing_false_failure(nr):
     assert no_add_result.changed is False
 
 
-def test_empty_jinja2_template_value_error(nr):
+def test_empty_jinja2_template_value_error(nr: Nornir) -> None:
     result = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
@@ -138,7 +140,7 @@ def test_empty_jinja2_template_value_error(nr):
     assert "ValueError: " in device_result.result
 
 
-def test_no_template(nr):
+def test_no_template(nr: Nornir) -> None:
     result = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
@@ -177,7 +179,7 @@ def test_add_dry_run(nr_dry_run):
     assert len(get["router1"].result) == 0
 
 
-def test_delete_dry_run(nr, nr_dry_run):
+def test_delete_dry_run(nr: Nornir, nr_dry_run: Nornir) -> None:
     add = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
@@ -211,7 +213,7 @@ def test_delete_dry_run(nr, nr_dry_run):
     assert len(verify["router1"].result) == 1
 
 
-def test_delete_gt_1(nr, nr_dry_run):
+def test_delete_gt_1(nr: Nornir, nr_dry_run: Nornir) -> None:
     add = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
@@ -251,7 +253,7 @@ def test_delete_gt_1(nr, nr_dry_run):
     assert "ValueError: Expected 1" in delete["router1"].result
 
 
-def test_add_values_changed(nr):
+def test_add_values_changed(nr: Nornir) -> None:
     add = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
@@ -264,7 +266,7 @@ def test_add_values_changed(nr):
     assert "ValueError: Expected 1" in add["router1"].result
 
 
-def test_update_values_changed(nr):
+def test_update_values_changed(nr: Nornir) -> None:
     add = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",
@@ -286,7 +288,7 @@ def test_update_values_changed(nr):
     assert "ValueError: Expected 1" in update["router1"].result
 
 
-def test_update_dry_run(nr, nr_dry_run):
+def test_update_dry_run(nr: Nornir, nr_dry_run: Nornir) -> None:
     add = nr.run(
         task=routeros_config_item,
         path="/ip/firewall/address-list",

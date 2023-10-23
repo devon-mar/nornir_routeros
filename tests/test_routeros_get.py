@@ -1,7 +1,9 @@
+from nornir.core import Nornir
+
 from nornir_routeros.plugins.tasks import routeros_get
 
 
-def test_routeros_get(nr):
+def test_routeros_get(nr: Nornir) -> None:
     result = nr.run(task=routeros_get, path="/system/resource")
     assert len(result["router1"]) == 1
     device_result = result["router1"][0]
@@ -11,7 +13,7 @@ def test_routeros_get(nr):
     assert device_result.result[0]["platform"] == "MikroTik"
 
 
-def test_get_with_name(nr):
+def test_get_with_name(nr: Nornir) -> None:
     result = nr.run(task=routeros_get, path="/ip/service", name_="www")
     assert len(result["router1"]) == 1
     host_result = result["router1"][0]
