@@ -41,8 +41,11 @@ def test_address_list(nr):
     )
     assert len(result["router1"]) == 1
     device_result = result["router1"][0]
-    assert device_result.failed is False, str(device_result.result)
+    assert device_result.failed is False, str(device_result)
     assert device_result.changed is True
+    assert isinstance(device_result.result, list), str(device_result.result)
+    assert len(device_result.result) == 1, str(device_result.result)
+    assert device_result.result[0]["address"] == "10.0.0.0/8", str(device_result.result)
 
     idemp = nr.run(
         task=routeros_config_item,
