@@ -107,11 +107,9 @@ def routeros_config_item(
 
     # Holds the properties of the item
     desired_props = {}
+    set_props = {}
     if template_property_values:
         for k, v in properties.items():
-            if k in set_properties:
-                v = set_properties[k]
-
             # Render the value using jinja2
             template = Template(str(v))
             rendered_val = template.render(host=task.host.dict())
@@ -119,14 +117,29 @@ def routeros_config_item(
                 desired_props[k] = rendered_val
             else:
                 raise ValueError(f"Jinja2 rendered a empty value for property {k}")
+
+            if k in set_properties:
+                sp = set_properties[k]
+                template = Template(str(sp))
+                rendered_val = template.render(host=task.host.dict())
+                if rendered_val:
+                    set_props[k] = rendered_val
+                else:
+                    raise ValueError(
+                        f"Jinja2 rendered a empty value for set property {k}"
+                    )
+            else:
+                set_props[k] = rendered_val
     else:
         desired_props = properties
+        set_props = desired_props.copy()
+        set_props.update(set_properties)
 
     if len(get_results) == 0 and add_if_missing is True:
         if dry_run is True:
             result = None
         else:
-            resource.add(**desired_props)
+            resource.add(**set_props)
             item = resource.get(**where)
             if len(item) != 1:
                 raise ValueError(f"Expected 1 item, received {len(item)}: {item}")
@@ -152,9 +165,9 @@ def routeros_config_item(
                 if k in set_properties:
                     v = set_properties[k]
                 diff_lines.append(f"-{k}={current_props.get(k, '')}")
-                diff_lines.append(f"+{k}={v}")
+                diff_lines.append(f"+{k}={set_props[k]}")
 
-                set_params[k] = v
+                set_params[k] = set_props[k]
                 do_set = True
 
         if do_set is True and dry_run is False:

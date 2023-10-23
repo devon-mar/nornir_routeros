@@ -11,6 +11,18 @@ def test_change_identity(nr: Nornir) -> None:
         task=routeros_config_item,
         path="/system/identity",
         where={},
+        properties={"name": "testhostname"},
+    )
+    assert len(result["router1"]) == 1
+    device_result = result["router1"][0]
+    assert device_result.failed is False, repr(device_result.result)
+    assert device_result.changed is True
+    assert device_result.result["name"] == "testhostname"
+
+    result = nr.run(
+        task=routeros_config_item,
+        path="/system/identity",
+        where={},
         properties={"name": "{{ host.name }}"},
         template_property_values=True,
     )
@@ -464,3 +476,43 @@ def test_set_properties(nr: Nornir, nr_dry_run: Nornir) -> None:
     assert idemp["router1"].failed is False, repr(update["router1"].result)
     assert idemp["router1"].changed is False
     assert "next-pool" not in update["router1"].result
+
+
+def test_set_properties_template(nr: Nornir) -> None:
+    result = nr.run(
+        task=routeros_config_item,
+        path="/system/identity",
+        where={},
+        properties={"name": "abcd123"},
+        template_property_values=True,
+    )
+    assert len(result["router1"]) == 1
+    device_result = result["router1"][0]
+    assert device_result.result["name"] == "abcd123"
+
+    result = nr.run(
+        task=routeros_config_item,
+        path="/system/identity",
+        where={},
+        properties={"name": "foo"},
+        set_properties={"name": "{{ host.name }}"},
+        template_property_values=True,
+    )
+    assert len(result["router1"]) == 1
+    device_result = result["router1"][0]
+    assert device_result.result["name"] == "router1"
+
+
+def test_set_properties_template_empty(nr: Nornir) -> None:
+    result = nr.run(
+        task=routeros_config_item,
+        path="/system/identity",
+        where={},
+        properties={"name": "abcd123"},
+        set_properties={"name": "{{ '' }}"},
+        template_property_values=True,
+    )
+    assert len(result["router1"]) == 1
+    device_result = result["router1"][0]
+    assert device_result.failed is True
+    assert "ValueError: " in device_result.result
