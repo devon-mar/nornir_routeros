@@ -11,6 +11,7 @@ def routeros_config_item(
     path: str,
     where: Dict[str, str],
     properties: Optional[Dict[str, str]],
+    set_properties: Optional[Dict[str, str]] = None,
     add_if_missing: bool = False,
     template_property_values: bool = False,
 ) -> Result:
@@ -22,6 +23,8 @@ def routeros_config_item(
         path: The path to where the item should be. Example: /ip/firewall/filter to configure firewall filters.
         where: Dictionary of properties and values to find the item.
         properties: Desired properties of the item. If ``None``, then any items matching ``where`` will be **removed**.
+        set_properties: Sometimes the value used in add/set doesn't match what is showed in print. Values here will be
+          override those used in ``properties`` when creating/updating an item.
         add_if_missing: If an item matching the criteria in ``where`` doesn't exist then one will be created.
         template_property_values: Use Jinja2 for property values.
 
@@ -77,6 +80,7 @@ def routeros_config_item(
     resource = api.get_resource(path)
     get_results = resource.get(**where)
     dry_run = task.is_dry_run()
+    set_properties = set_properties or {}
 
     diff_lines = []
 
@@ -105,6 +109,9 @@ def routeros_config_item(
     desired_props = {}
     if template_property_values:
         for k, v in properties.items():
+            if k in set_properties:
+                v = set_properties[k]
+
             # Render the value using jinja2
             template = Template(str(v))
             rendered_val = template.render(host=task.host.dict())
@@ -142,6 +149,8 @@ def routeros_config_item(
             current_val = current_props.get(k, "")
 
             if current_val != desired_props[k]:
+                if k in set_properties:
+                    v = set_properties[k]
                 diff_lines.append(f"-{k}={current_props.get(k, '')}")
                 diff_lines.append(f"+{k}={v}")
 

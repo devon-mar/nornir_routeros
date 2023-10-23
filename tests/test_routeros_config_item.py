@@ -333,3 +333,134 @@ def test_update_dry_run(nr: Nornir, nr_dry_run: Nornir) -> None:
         list="update-dry",
     )
     assert len(verify2["router1"].result) == 1
+
+
+def test_set_properties(nr: Nornir, nr_dry_run: Nornir) -> None:
+    add = nr.run(
+        task=routeros_config_item,
+        path="/ip/pool",
+        properties={
+            "name": "pool1",
+            "ranges": "192.0.2.1-192.0.2.10",
+        },
+        where={
+            "name": "pool1",
+        },
+        add_if_missing=True,
+    )
+    assert add["router1"].failed is False, repr(add["router1"].result)
+    assert add["router1"].changed is True
+
+    add = nr.run(
+        task=routeros_config_item,
+        path="/ip/pool",
+        properties={
+            "name": "pool2",
+            "ranges": "192.0.2.20-192.0.2.30",
+            "next-pool": "pool1",
+        },
+        where={
+            "name": "pool2",
+        },
+        add_if_missing=True,
+    )
+    assert add["router1"].failed is False, repr(add["router1"].result)
+    assert add["router1"].changed is True
+
+    update = nr.run(
+        task=routeros_config_item,
+        path="/ip/pool",
+        properties={
+            "name": "pool2",
+            "ranges": "192.0.2.20-192.0.2.30",
+            # "" is not a valid value so this will fail.
+            "next-pool": "",
+        },
+        where={
+            "name": "pool2",
+        },
+        add_if_missing=True,
+    )
+    assert update["router1"].failed is True, repr(update["router1"].result)
+    nr.data.reset_failed_hosts()
+
+    update = nr_dry_run.run(
+        task=routeros_config_item,
+        path="/ip/pool",
+        properties={
+            "name": "pool2",
+            "ranges": "192.0.2.20-192.0.2.30",
+            "next-pool": "",
+        },
+        set_properties={
+            "next-pool": "none",
+        },
+        where={
+            "name": "pool2",
+        },
+        add_if_missing=True,
+    )
+    assert update["router1"].failed is False, repr(update["router1"].result)
+    assert update["router1"].changed is True
+    assert "-next-pool=pool1" in update["router1"].diff
+    assert "+next-pool=none" in update["router1"].diff
+    assert update["router1"].result["next-pool"] == "pool1"
+
+    # Verify not changed
+    verify = nr.run(
+        task=routeros_get,
+        path="/ip/pool",
+        name_="pool2",
+    )
+    assert len(verify["router1"].result) == 1, verify["router1"].result
+    assert verify["router1"].result[0]["next-pool"] == "pool1"
+
+    update = nr.run(
+        task=routeros_config_item,
+        path="/ip/pool",
+        properties={
+            "name": "pool2",
+            "ranges": "192.0.2.20-192.0.2.30",
+            "next-pool": "",
+        },
+        set_properties={
+            "next-pool": "none",
+        },
+        where={
+            "name": "pool2",
+        },
+        add_if_missing=True,
+    )
+    assert update["router1"].failed is False, repr(update["router1"].result)
+    assert update["router1"].changed is True
+    assert "-next-pool=pool1" in update["router1"].diff
+    assert "+next-pool=none" in update["router1"].diff
+    assert "next-pool" not in update["router1"].result
+
+    verify = nr.run(
+        task=routeros_get,
+        path="/ip/pool",
+        name_="pool2",
+    )
+    assert len(verify["router1"].result) == 1, verify["router1"].result
+    assert "next-pool" not in verify["router1"].result[0]
+
+    idemp = nr.run(
+        task=routeros_config_item,
+        path="/ip/pool",
+        properties={
+            "name": "pool2",
+            "ranges": "192.0.2.20-192.0.2.30",
+            "next-pool": "",
+        },
+        set_properties={
+            "next-pool": "none",
+        },
+        where={
+            "name": "pool2",
+        },
+        add_if_missing=True,
+    )
+    assert idemp["router1"].failed is False, repr(update["router1"].result)
+    assert idemp["router1"].changed is False
+    assert "next-pool" not in update["router1"].result
