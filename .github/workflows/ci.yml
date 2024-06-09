@@ -80,7 +80,7 @@ jobs:
 
       - name: Run pytest
         run: |
-          poetry run pytest -vv --cov-report=xml --cov-branch
+          poetry run pytest -vv --cov=nornir_routeros --cov-report=xml --cov-branch
 
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v4
