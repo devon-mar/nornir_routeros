@@ -17,7 +17,7 @@ sphinx-rtd-theme = "^1"
 sphinx-autodoc-typehints = "^1"
 nornir = "^3"
 pytest = "^7"
-pytest-cov = "^4"
+pytest-cov = { version = "^5", python = "^3.8" }
 ruff = { version = "^0.4", python = "^3.7" }
 
 [tool.poetry.plugins."nornir.plugins.connections"]
