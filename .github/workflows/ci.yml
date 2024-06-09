@@ -25,24 +25,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Poetry
+        run: pipx install poetry
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install Poetry
-        run: pipx install poetry
-
-      - name: Load cached venv
-        id: cache-poetry-dependencies
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
+          cache: poetry
 
       - name: Run poetry install
         run: poetry install
-        if: steps.cache-poetry-dependencies.outputs.cache-hit != 'true'
 
       - name: Build docs
         working-directory: ./docs
@@ -70,28 +63,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Poetry
+        run: pipx install poetry
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-
-      # https://stackoverflow.com/questions/62977821/how-to-cache-poetry-install-for-github-actions
-      - name: Load cached venv
-        id: cache-poetry-dependencies
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
+          cache: poetry
 
       - name: Run poetry install
         run: poetry install
-        if: steps.cache-poetry-dependencies.outputs.cache-hit != 'true'
 
       - name: Setup the router
         run: tests/ros_setup.sh
