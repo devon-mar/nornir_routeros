@@ -72,11 +72,11 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: poetry
 
-      - name: Run poetry install
-        run: poetry install
-
       - name: Setup the router
         run: tests/ros_setup.sh
+
+      - name: Run poetry install
+        run: poetry install
 
       - name: Run pytest
         run: |
