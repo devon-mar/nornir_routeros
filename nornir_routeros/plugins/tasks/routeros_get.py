@@ -22,7 +22,7 @@ def routeros_get(task: Task, path: str, **kwargs) -> Result:
 
             nr.run(
                 task=routeros_get,
-                path="/system/routerboard"
+                path="/system/routerboard",
             )
 
         Get non-dynamic addresses::
@@ -30,7 +30,7 @@ def routeros_get(task: Task, path: str, **kwargs) -> Result:
             nr.run(
                 task=routeros_get,
                 path="/ip/address",
-                dynamic="false"
+                dynamic="false",
             )
     """
 

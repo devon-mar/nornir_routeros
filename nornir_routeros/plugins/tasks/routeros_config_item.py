@@ -42,7 +42,7 @@ def routeros_config_item(
                     where={},
                     properties={
                         "name": "{{ host.name }}"
-                    }
+                    },
                 )
 
             Ensure the ``www`` service is disabled::
@@ -55,7 +55,7 @@ def routeros_config_item(
                     },
                     properties={
                         "disabled": "true"
-                    }
+                    },
                 )
 
             Ensure a script is configured::

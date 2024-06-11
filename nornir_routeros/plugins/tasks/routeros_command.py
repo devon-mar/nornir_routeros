@@ -26,7 +26,7 @@ def routeros_command(
                 path="/",
                 command="ping",
                 address="127.0.0.1",
-                count=5
+                count=5,
             )
     """
 
