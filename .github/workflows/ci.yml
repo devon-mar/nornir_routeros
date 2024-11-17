@@ -87,6 +87,6 @@ jobs:
           poetry run pytest -vv --cov=nornir_routeros --cov-report=xml --cov-branch
 
       - name: Upload coverage to codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
