@@ -1,7 +1,7 @@
-from typing import Any, Dict
+from typing import Any
 
 
-def clean_kwargs(kwargs: Dict[str, Any]) -> Dict[str, Any]:
+def clean_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
     """
     Remove trailing '_' from keys.
     """

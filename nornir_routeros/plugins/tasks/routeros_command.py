@@ -1,5 +1,3 @@
-from typing import Dict
-
 from nornir.core.task import Result, Task
 
 from nornir_routeros.plugins.connections import CONNECTION_NAME
@@ -32,7 +30,7 @@ def routeros_command(
 
     api = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
     # See https://github.com/socialwifi/RouterOS-api/issues/39
-    call_args: Dict[str, bytes] = {
+    call_args: dict[str, bytes] = {
         str(k): str(v).encode() for k, v in clean_kwargs(kwargs).items()
     }
     result = api.get_binary_resource(path).call(command, call_args)

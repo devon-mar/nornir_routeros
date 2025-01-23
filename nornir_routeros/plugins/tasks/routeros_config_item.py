@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Optional
 
 from jinja2 import Template
 from nornir.core.task import Result, Task
@@ -9,9 +9,9 @@ from nornir_routeros.plugins.connections import CONNECTION_NAME
 def routeros_config_item(
     task: Task,
     path: str,
-    where: Dict[str, str],
-    properties: Optional[Dict[str, str]],
-    set_properties: Optional[Dict[str, str]] = None,
+    where: dict[str, str],
+    properties: Optional[dict[str, str]],
+    set_properties: Optional[dict[str, str]] = None,
     add_if_missing: bool = False,
     template_property_values: bool = False,
 ) -> Result:

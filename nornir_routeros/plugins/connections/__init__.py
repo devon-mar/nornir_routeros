@@ -1,5 +1,5 @@
 import ssl
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from nornir.core.configuration import Config
 from routeros_api import RouterOsApiPool
@@ -19,7 +19,7 @@ class RouterOsApi:
         password: Optional[str],
         port: Optional[int],
         platform: Optional[str],
-        extras: Optional[Dict[str, Any]] = None,
+        extras: Optional[dict[str, Any]] = None,
         configuration: Optional[Config] = None,
     ) -> None:
         """
