@@ -8,10 +8,7 @@ name: CI
   pull_request:
 
 env:
-  # Python 3.12 doesn't work
-  # since setuptools is no longer installed in venvs.
-  # Need to wait for Nornir to add it as an explicit dependency.
-  PYTHON_VERSION: "3.11"
+  PYTHON_VERSION: "3.13"
 
 jobs:
   lint:
