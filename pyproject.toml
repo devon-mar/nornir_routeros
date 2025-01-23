@@ -1,31 +1,38 @@
-[tool.poetry]
+[project]
 name = "nornir_routeros"
-version = "0.6.0"
+version = "0.6.1"
 description = "RouterOS API plugins for nornir"
-authors = ["Devon Mar <devonm@mdmm.ca>"]
-license = "Apache-2.0"
+authors = [
+  {name = "Devon Mar", email = "devon-mar@users.noreply.github.com"},
+]
 readme = "README.md"
+requires-python = ">=3.6"
+dependencies = [
+  "routeros-api~=0.18.0",
+  "Jinja2>=2.11.2,<4.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.6"
-RouterOS-api = "^0.17.0"
-Jinja2 = "^2.11.2|^3.0"
+[dependency-groups]
+dev = [
+  "sphinx~=4.0",
+  "sphinx-rtd-theme~=1.0",
+  "sphinx-autodoc-typehints~=1.0",
+  "nornir~=3.0",
+  "pytest~=7.0",
+  "pytest-cov~=5.0; python_version >= '3.8'",
+  "ruff~=0.4.0; python_version >= '3.7'",
+  ]
 
-[tool.poetry.dev-dependencies]
-Sphinx = "^4"
-sphinx-rtd-theme = "^1"
-sphinx-autodoc-typehints = "^1"
-nornir = "^3"
-pytest = "^7"
-pytest-cov = { version = "^5", python = "^3.8" }
-ruff = { version = "^0.4", python = "^3.7" }
-
-[tool.poetry.plugins."nornir.plugins.connections"]
-"routerosapi" = "nornir_routeros.plugins.connections:RouterOsApi"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+include = ["nornir_routeros"]
+
+[project.entry-points."nornir.plugins.connections"]
+routerosapi = "nornir_routeros.plugins.connections:RouterOsApi"
 
 [tool.ruff.format]
 docstring-code-format = true

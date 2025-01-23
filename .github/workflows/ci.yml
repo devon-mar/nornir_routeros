@@ -19,31 +19,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: chartboost/ruff-action@v1
+      - uses: astral-sh/ruff-action@v3
+        with:
+          # Doesn't support the constraint in pyproject.toml
+          version: "latest"
 
-      - uses: chartboost/ruff-action@v1
+      - uses: astral-sh/ruff-action@v3
         with:
           args: format --check
+          version: "latest"
   docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Poetry
-        run: pipx install poetry
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: poetry
 
-      - name: Run poetry install
-        run: poetry install
+      - name: Run uv sync
+        run: uv sync --frozen
 
       - name: Build docs
         working-directory: ./docs
-        run: poetry run make html SPHINXOPTS="-n"
+        run: uv run make html SPHINXOPTS="-n"
 
   test:
     strategy:
@@ -52,7 +57,7 @@ jobs:
           - 7.10.1
           # Long-term
           - 6.48.6
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     services:
       routeros:
         image: ghcr.io/devon-mar/docker-routeros:${{ matrix.ros_version }}
@@ -67,24 +72,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Poetry
-        run: pipx install poetry
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: poetry
 
       - name: Setup the router
         run: tests/ros_setup.sh
 
-      - name: Run poetry install
-        run: poetry install
+      - name: Run uv sync
+        run: uv sync --frozen
 
       - name: Run pytest
         run: |
-          poetry run pytest -vv --cov=nornir_routeros --cov-report=xml --cov-branch
+          uv run pytest -vv --cov=nornir_routeros --cov-report=xml --cov-branch
 
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v5
