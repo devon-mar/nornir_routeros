@@ -57,7 +57,7 @@ jobs:
           - 7.10.1
           # Long-term
           - 6.48.6
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     services:
       routeros:
         image: ghcr.io/devon-mar/docker-routeros:${{ matrix.ros_version }}
@@ -65,10 +65,9 @@ jobs:
           - 2222:22
           - 8728:8728
           - 8729:8729
-        volumes:
-          - /dev/net/tun:/dev/net/tun
         options: >-
           --cap-add=NET_ADMIN
+          --device /dev/net/tun
     steps:
       - uses: actions/checkout@v4
 
