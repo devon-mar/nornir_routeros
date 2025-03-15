@@ -417,7 +417,7 @@ wheels = [
 
 [[package]]
 name = "routeros-api"
-version = "0.18.1"
+version = "0.21.0"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/45/e0/6fc37314480579bec7e4678ee288c9352131578ab8fb1ffaacac7abc98b9/routeros_api-0.18.1.tar.gz", hash = "sha256:23a426f8a3b80fae7d99311ec0253b19894ed2d1688b20281dea847bd93cb7bc", size = 12697 }
 wheels = [
