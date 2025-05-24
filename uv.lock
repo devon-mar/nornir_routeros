@@ -267,7 +267,7 @@ wheels = [
 
 [[package]]
 name = "nornir-routeros"
-version = "0.7.0"
+version = "0.7.1"
 source = { editable = "." }
 dependencies = [
     { name = "jinja2", version = "3.0.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
@@ -289,7 +289,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "jinja2", specifier = ">=2.11.2,<4.0" },
-    { name = "routeros-api", specifier = "~=0.18.0" },
+    { name = "routeros-api", specifier = ">=0.18,<0.22" },
 ]
 
 [package.metadata.requires-dev]
@@ -419,9 +419,9 @@ wheels = [
 name = "routeros-api"
 version = "0.21.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/45/e0/6fc37314480579bec7e4678ee288c9352131578ab8fb1ffaacac7abc98b9/routeros_api-0.18.1.tar.gz", hash = "sha256:23a426f8a3b80fae7d99311ec0253b19894ed2d1688b20281dea847bd93cb7bc", size = 12697 }
+sdist = { url = "https://files.pythonhosted.org/packages/3b/3d/414cfbdc91ca6cf127cde120178ec0961caec4b1810e654f2d4520a475b7/routeros_api-0.21.0.tar.gz", hash = "sha256:0d37452a4ff85cd476dca392068d7d76ba430c9b055c39d8dabc5930a997d82d", size = 14332 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/aa/a7/9c00be853b1cd909c166593ed4c933538e6f2861f83566dfd8124da36701/RouterOS_api-0.18.1-py2.py3-none-any.whl", hash = "sha256:e0decdc9438a1cfcc8d7e3cdfdbba8fcb58980b104376f2d88c19432e8b565fc", size = 20917 },
+    { url = "https://files.pythonhosted.org/packages/d5/00/05f60d90a041ff61fce514cf8db3d5b8401e45a1baad1b1b1cde814f5c27/routeros_api-0.21.0-py2.py3-none-any.whl", hash = "sha256:4189c11bdeae0d8d654b1f1212f3654a54f0df8e4ec0bcb4d5bc31303a7f76d0", size = 22656 },
 ]
 
 [[package]]

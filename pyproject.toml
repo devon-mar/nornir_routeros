@@ -1,6 +1,6 @@
 [project]
 name = "nornir_routeros"
-version = "0.7.0"
+version = "0.7.1"
 description = "RouterOS API plugins for nornir"
 authors = [
   {name = "Devon Mar", email = "devon-mar@users.noreply.github.com"},
