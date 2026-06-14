@@ -89,6 +89,6 @@ jobs:
           uv run pytest -vv --cov=nornir_routeros --cov-report=xml --cov-branch
 
       - name: Upload coverage to codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
